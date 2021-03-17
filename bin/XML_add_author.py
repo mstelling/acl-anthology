@@ -1,21 +1,23 @@
-# no comments, I'm tired af. hope this works
+
 
 import argparse
 from lxml import etree
 
+# Set up the Matt POST node
 authorroot = etree.Element("author")
 mattsfirst = etree.SubElement(authorroot, "first")
 mattsfirst.text = "Matt"
 mattslast = etree.SubElement(authorroot, "last")
 mattslast.text = "POST"
 
-
+# set up the parsing of arguments
 parser = argparse.ArgumentParser()
-parser.add_argument("xmlfile", nargs='+', help="List of XML files")
+parser.add_argument("xmlfiles", nargs='+', help="List of XML files")
 args = parser.parse_args()
-xmlfile = args.xmlfile
+xmlfile = args.xmlfiles
 
-for singlefile in args.xmlfile:
+# makes sure there are two authors for every paper, as per the task
+for singlefile in args.xmlfiles:
     maintree = etree.parse(singlefile)
     mainroot = maintree.getroot()
     
@@ -28,9 +30,10 @@ for singlefile in args.xmlfile:
         else:
             for badauthors in paper.findall("author")[2:]:
                 paper.remove(badauthors)
-                
-            for lastname in paper.iter("last"):
-                lastname.text = lastname.text.upper()
+
+    #uppercase lastnames
+    for lastname in paper.iter("last"):
+        lastname.text = lastname.text.upper()
                     
         
 
